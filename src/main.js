@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import './style.css';
 
 // ============================================================
-// SCENE
+// BASIC SETUP
 // ============================================================
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020106);
+scene.background = new THREE.Color(0x020107);
 
 const camera = new THREE.PerspectiveCamera(
   42,
@@ -15,26 +15,34 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 
-camera.position.set(0, 1.5, 8);
+camera.position.set(0, 1.3, 8);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
   powerPreference: 'high-performance'
 });
 
-// Lower pixel ratio = much better FPS
+// FPS optimization
 renderer.setPixelRatio(
-  Math.min(window.devicePixelRatio, 1.5)
+  Math.min(window.devicePixelRatio, 1.35)
 );
 
-renderer.setSize(innerWidth, innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
-
-document.querySelector('#app').appendChild(
-  renderer.domElement
+renderer.setSize(
+  innerWidth,
+  innerHeight
 );
+
+renderer.outputColorSpace =
+  THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+  THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.1;
+
+document
+  .querySelector('#app')
+  .appendChild(renderer.domElement);
 
 
 // ============================================================
@@ -43,40 +51,55 @@ document.querySelector('#app').appendChild(
 
 scene.add(
   new THREE.AmbientLight(
-    0x8060a0,
-    2
+    0x9bb7ff,
+    2.2
   )
 );
 
-const purpleLight =
+const keyLight =
   new THREE.PointLight(
-    0xc020ff,
-    80,
-    15
+    0xffffff,
+    70,
+    16
   );
 
-purpleLight.position.set(
-  2,
+keyLight.position.set(
+  3,
   4,
-  3
+  4
 );
 
-scene.add(purpleLight);
+scene.add(keyLight);
 
 const blueLight =
   new THREE.PointLight(
-    0x405cff,
-    55,
-    14
+    0x258cff,
+    70,
+    13
   );
 
 blueLight.position.set(
-  -4,
+  -3,
   2,
-  2
+  3
 );
 
 scene.add(blueLight);
+
+const purpleLight =
+  new THREE.PointLight(
+    0x9c38ff,
+    40,
+    12
+  );
+
+purpleLight.position.set(
+  3,
+  1,
+  -3
+);
+
+scene.add(purpleLight);
 
 
 // ============================================================
@@ -92,7 +115,7 @@ const floor =
     new THREE.MeshBasicMaterial({
       color: 0x100016,
       transparent: true,
-      opacity: 0.75
+      opacity: 0.65
     })
   );
 
@@ -100,28 +123,28 @@ floor.rotation.x =
   -Math.PI / 2;
 
 floor.position.y =
-  -2.05;
+  -2.15;
 
 scene.add(floor);
 
 
 // ============================================================
-// STARS
+// STAR FIELD
 // ============================================================
 
 const starGeometry =
   new THREE.BufferGeometry();
 
-const starCount = 1400;
+const STAR_COUNT = 1200;
 
 const starPositions =
   new Float32Array(
-    starCount * 3
+    STAR_COUNT * 3
   );
 
 for (
   let i = 0;
-  i < starCount;
+  i < STAR_COUNT;
   i++
 ) {
   const i3 = i * 3;
@@ -130,10 +153,10 @@ for (
     (Math.random() - 0.5) * 20;
 
   starPositions[i3 + 1] =
-    (Math.random() - 0.5) * 12;
+    (Math.random() - 0.5) * 11;
 
   starPositions[i3 + 2] =
-    -Math.random() * 16 - 2;
+    -Math.random() * 15 - 2;
 }
 
 starGeometry.setAttribute(
@@ -146,7 +169,7 @@ starGeometry.setAttribute(
 
 const starMaterial =
   new THREE.PointsMaterial({
-    color: 0xd8caff,
+    color: 0xdce5ff,
     size: 0.018,
     transparent: true,
     opacity: 0.75
@@ -170,7 +193,7 @@ const blackHole =
 const blackHoleCore =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      1.2,
+      1.15,
       32,
       32
     ),
@@ -192,7 +215,7 @@ const blackHoleRing =
       80
     ),
     new THREE.MeshBasicMaterial({
-      color: 0x8e25ff,
+      color: 0x7b22d8,
       transparent: true,
       opacity: 0.35
     })
@@ -207,7 +230,7 @@ blackHole.add(
 
 blackHole.position.set(
   0,
-  1.3,
+  1.4,
   -6
 );
 
@@ -225,7 +248,7 @@ const robot =
 
 robot.position.set(
   0,
-  -0.65,
+  -0.55,
   0
 );
 
@@ -233,38 +256,85 @@ scene.add(robot);
 
 
 // ============================================================
-// MATERIALS
+// ROBOT MATERIALS
 // ============================================================
 
-const bodyMaterial =
+const whiteMaterial =
   new THREE.MeshStandardMaterial({
-    color: 0x171326,
-    metalness: 0.55,
+    color: 0xf3f6fa,
+    metalness: 0.25,
     roughness: 0.3
   });
 
-const darkMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0x0a0712,
-    metalness: 0.5,
-    roughness: 0.25
-  });
-
-const purpleMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0xb923ff,
-    emissive: 0x8500ff,
-    emissiveIntensity: 2.5,
-    roughness: 0.25
-  });
-
-const eyeMaterial =
+const whiteBrightMaterial =
   new THREE.MeshStandardMaterial({
     color: 0xffffff,
-    emissive: 0x8f70ff,
-    emissiveIntensity: 2,
-    roughness: 0.15
+    metalness: 0.15,
+    roughness: 0.25
   });
+
+const darkVisorMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x050a12,
+    metalness: 0.45,
+    roughness: 0.18
+  });
+
+const blueMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x176de5,
+    metalness: 0.35,
+    roughness: 0.25
+  });
+
+const blueGlowMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x24cfff,
+    emissive: 0x009cff,
+    emissiveIntensity: 2.8,
+    metalness: 0.1,
+    roughness: 0.2
+  });
+
+const blackMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x070a12,
+    metalness: 0.3,
+    roughness: 0.25
+  });
+
+
+// ============================================================
+// SHARED GEOMETRIES
+// ============================================================
+
+const bodyGeometry =
+  new THREE.SphereGeometry(
+    1,
+    24,
+    20
+  );
+
+const jointGeometry =
+  new THREE.SphereGeometry(
+    0.22,
+    16,
+    16
+  );
+
+const handGeometry =
+  new THREE.SphereGeometry(
+    0.19,
+    14,
+    14
+  );
+
+const footGeometry =
+  new THREE.SphereGeometry(
+    0.32,
+    18,
+    16
+  );
 
 
 // ============================================================
@@ -273,24 +343,98 @@ const eyeMaterial =
 
 const body =
   new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.85,
-      24,
-      20
-    ),
-    bodyMaterial
+    bodyGeometry,
+    whiteMaterial
   );
 
 body.scale.set(
-  1,
-  1.15,
-  0.8
+  0.82,
+  1.0,
+  0.62
 );
 
 body.position.y =
-  -0.4;
+  -0.45;
 
 robot.add(body);
+
+
+// ============================================================
+// BELT / WAIST
+// ============================================================
+
+const waist =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.52,
+      20,
+      16
+    ),
+    darkVisorMaterial
+  );
+
+waist.scale.set(
+  1.25,
+  0.35,
+  0.75
+);
+
+waist.position.y =
+  -1.15;
+
+robot.add(waist);
+
+
+// ============================================================
+// CHEST PANEL
+// ============================================================
+
+const chestPanel =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.48,
+      24,
+      20
+    ),
+    whiteBrightMaterial
+  );
+
+chestPanel.scale.set(
+  1.0,
+  1.0,
+  0.25
+);
+
+chestPanel.position.set(
+  0,
+  -0.35,
+  0.55
+);
+
+robot.add(chestPanel);
+
+
+// ============================================================
+// BLUE CHEST CORE
+// ============================================================
+
+const chestCore =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.22,
+      20,
+      20
+    ),
+    blueGlowMaterial
+  );
+
+chestCore.position.set(
+  0,
+  -0.38,
+  0.69
+);
+
+robot.add(chestCore);
 
 
 // ============================================================
@@ -305,54 +449,91 @@ head.position.y =
 
 robot.add(head);
 
-const headMesh =
+
+// Rounded white head
+
+const headShell =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      0.9,
-      28,
+      0.95,
+      32,
       24
     ),
-    darkMaterial
+    whiteBrightMaterial
   );
 
-headMesh.scale.set(
-  1.05,
-  0.9,
-  0.85
+headShell.scale.set(
+  1.12,
+  0.88,
+  0.86
 );
 
-head.add(headMesh);
+head.add(
+  headShell
+);
 
 
 // ============================================================
-// FACE
+// BLUE HEAD CAP
 // ============================================================
 
-const face =
+const headCap =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      0.72,
+      0.95,
       24,
-      20
+      16,
+      0,
+      Math.PI * 2,
+      0,
+      Math.PI * 0.3
     ),
-    new THREE.MeshStandardMaterial({
-      color: 0x180022,
-      emissive: 0x35004d,
-      emissiveIntensity: 1.2,
-      roughness: 0.3
-    })
+    blueMaterial
   );
 
-face.scale.set(
-  1,
+headCap.scale.set(
+  1.12,
+  0.88,
+  0.86
+);
+
+headCap.position.y =
+  0.08;
+
+head.add(
+  headCap
+);
+
+
+// ============================================================
+// FACE VISOR
+// ============================================================
+
+const visor =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.75,
+      28,
+      20
+    ),
+    darkVisorMaterial
+  );
+
+visor.scale.set(
+  1.18,
   0.72,
   0.25
 );
 
-face.position.z =
-  0.67;
+visor.position.set(
+  0,
+  0.02,
+  0.76
+);
 
-head.add(face);
+head.add(
+  visor
+);
 
 
 // ============================================================
@@ -361,7 +542,7 @@ head.add(face);
 
 const eyeGeometry =
   new THREE.SphereGeometry(
-    0.22,
+    0.17,
     20,
     20
   );
@@ -369,25 +550,25 @@ const eyeGeometry =
 const leftEye =
   new THREE.Mesh(
     eyeGeometry,
-    eyeMaterial
+    blueGlowMaterial
   );
 
 const rightEye =
   new THREE.Mesh(
     eyeGeometry,
-    eyeMaterial
+    blueGlowMaterial
   );
 
 leftEye.position.set(
-  -0.32,
-  0.1,
-  0.76
+  -0.31,
+  0.08,
+  0.92
 );
 
 rightEye.position.set(
-  0.32,
-  0.1,
-  0.76
+  0.31,
+  0.08,
+  0.92
 );
 
 head.add(
@@ -397,65 +578,65 @@ head.add(
 
 
 // ============================================================
-// PUPILS
+// EYE HIGHLIGHTS
 // ============================================================
 
-const pupilGeometry =
+const highlightGeometry =
   new THREE.SphereGeometry(
-    0.09,
-    12,
-    12
+    0.045,
+    10,
+    10
   );
 
-const pupilMaterial =
+const highlightMaterial =
   new THREE.MeshBasicMaterial({
-    color: 0x6400ff
+    color: 0xffffff
   });
 
-const leftPupil =
+const leftHighlight =
   new THREE.Mesh(
-    pupilGeometry,
-    pupilMaterial
+    highlightGeometry,
+    highlightMaterial
   );
 
-const rightPupil =
+const rightHighlight =
   new THREE.Mesh(
-    pupilGeometry,
-    pupilMaterial
+    highlightGeometry,
+    highlightMaterial
   );
 
-leftPupil.position.set(
-  -0.32,
-  0.1,
-  0.95
+leftHighlight.position.set(
+  -0.36,
+  0.14,
+  1.04
 );
 
-rightPupil.position.set(
-  0.32,
-  0.1,
-  0.95
+rightHighlight.position.set(
+  0.26,
+  0.14,
+  1.04
 );
 
 head.add(
-  leftPupil,
-  rightPupil
+  leftHighlight,
+  rightHighlight
 );
 
 
 // ============================================================
-// MOUTH
+// SMILE
 // ============================================================
 
 const mouth =
   new THREE.Mesh(
     new THREE.TorusGeometry(
-      0.14,
-      0.035,
+      0.12,
+      0.025,
       8,
       20,
       Math.PI
     ),
-    purpleMaterial
+    blueGlowMaterial
   );
 
 mouth.rotation.x =
@@ -463,44 +644,53 @@ mouth.rotation.x =
 
 mouth.position.set(
   0,
-  -0.2,
-  0.76
+  -0.17,
+  0.94
 );
 
-head.add(mouth);
+head.add(
+  mouth
+);
 
 
 // ============================================================
-// EARS
+// SIDE EAR PANELS
 // ============================================================
 
 const earGeometry =
-  new THREE.SphereGeometry(
-    0.22,
-    16,
-    16
+  new THREE.CylinderGeometry(
+    0.28,
+    0.28,
+    0.12,
+    20
   );
 
 const leftEar =
   new THREE.Mesh(
     earGeometry,
-    bodyMaterial
+    blueMaterial
   );
 
 const rightEar =
   new THREE.Mesh(
     earGeometry,
-    bodyMaterial
+    blueMaterial
   );
 
+leftEar.rotation.z =
+  Math.PI / 2;
+
+rightEar.rotation.z =
+  Math.PI / 2;
+
 leftEar.position.set(
-  -0.9,
+  -1.0,
   0,
   0
 );
 
 rightEar.position.set(
-  0.9,
+  1.0,
   0,
   0
 );
@@ -512,68 +702,60 @@ head.add(
 
 
 // ============================================================
+// NECK
+// ============================================================
+
+const neck =
+  new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.25,
+      0.3,
+      0.22,
+      16
+    ),
+    blackMaterial
+  );
+
+neck.position.y =
+  -0.03;
+
+robot.add(neck);
+
+
+// ============================================================
 // ANTENNA
 // ============================================================
 
 const antenna =
   new THREE.Mesh(
     new THREE.CylinderGeometry(
+      0.025,
       0.035,
-      0.045,
-      0.4,
+      0.35,
       10
     ),
-    bodyMaterial
+    blueMaterial
   );
 
 antenna.position.y =
-  0.9;
+  1.9;
 
-head.add(antenna);
+robot.add(antenna);
 
-const antennaBall =
+const antennaTip =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      0.1,
+      0.08,
       14,
       14
     ),
-    purpleMaterial
+    blueGlowMaterial
   );
 
-antennaBall.position.y =
-  1.12;
+antennaTip.position.y =
+  2.08;
 
-head.add(antennaBall);
-
-
-// ============================================================
-// CHEST LIGHT
-// ============================================================
-
-const chest =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.18,
-      16,
-      16
-    ),
-    purpleMaterial
-  );
-
-chest.scale.set(
-  1.5,
-  0.5,
-  0.35
-);
-
-chest.position.set(
-  0,
-  -0.42,
-  0.67
-);
-
-robot.add(chest);
+robot.add(antennaTip);
 
 
 // ============================================================
@@ -587,14 +769,14 @@ const rightArm =
   new THREE.Group();
 
 leftArm.position.set(
-  -0.82,
-  -0.35,
+  -0.78,
+  -0.25,
   0
 );
 
 rightArm.position.set(
-  0.82,
-  -0.35,
+  0.78,
+  -0.25,
   0
 );
 
@@ -603,43 +785,136 @@ robot.add(
   rightArm
 );
 
-const armGeometry =
-  new THREE.SphereGeometry(
-    0.25,
-    16,
-    16
+
+// Upper arms
+
+const upperArmGeometry =
+  new THREE.CapsuleGeometry(
+    0.14,
+    0.45,
+    6,
+    10
   );
 
-const leftArmMesh =
+const leftUpperArm =
   new THREE.Mesh(
-    armGeometry,
-    bodyMaterial
+    upperArmGeometry,
+    whiteMaterial
   );
 
-const rightArmMesh =
+const rightUpperArm =
   new THREE.Mesh(
-    armGeometry,
-    bodyMaterial
+    upperArmGeometry,
+    whiteMaterial
   );
 
-leftArmMesh.scale.y =
-  1.5;
-
-rightArmMesh.scale.y =
-  1.5;
-
-leftArmMesh.position.y =
+leftUpperArm.position.y =
   -0.25;
 
-rightArmMesh.position.y =
+rightUpperArm.position.y =
   -0.25;
 
 leftArm.add(
-  leftArmMesh
+  leftUpperArm
 );
 
 rightArm.add(
-  rightArmMesh
+  rightUpperArm
+);
+
+
+// Elbows
+
+const leftElbow =
+  new THREE.Mesh(
+    jointGeometry,
+    blueMaterial
+  );
+
+const rightElbow =
+  new THREE.Mesh(
+    jointGeometry,
+    blueMaterial
+  );
+
+leftElbow.position.y =
+  -0.56;
+
+rightElbow.position.y =
+  -0.56;
+
+leftArm.add(
+  leftElbow
+);
+
+rightArm.add(
+  rightElbow
+);
+
+
+// Forearms
+
+const forearmGeometry =
+  new THREE.CapsuleGeometry(
+    0.13,
+    0.4,
+    6,
+    10
+  );
+
+const leftForearm =
+  new THREE.Mesh(
+    forearmGeometry,
+    whiteMaterial
+  );
+
+const rightForearm =
+  new THREE.Mesh(
+    forearmGeometry,
+    whiteMaterial
+  );
+
+leftForearm.position.y =
+  -0.82;
+
+rightForearm.position.y =
+  -0.82;
+
+leftArm.add(
+  leftForearm
+);
+
+rightArm.add(
+  rightForearm
+);
+
+
+// Hands
+
+const leftHand =
+  new THREE.Mesh(
+    handGeometry,
+    blackMaterial
+  );
+
+const rightHand =
+  new THREE.Mesh(
+    handGeometry,
+    blackMaterial
+  );
+
+leftHand.position.y =
+  -1.12;
+
+rightHand.position.y =
+  -1.12;
+
+leftArm.add(
+  leftHand
+);
+
+rightArm.add(
+  rightHand
 );
 
 
@@ -654,14 +929,14 @@ const rightLeg =
   new THREE.Group();
 
 leftLeg.position.set(
-  -0.32,
-  -1.25,
+  -0.3,
+  -1.35,
   0
 );
 
 rightLeg.position.set(
-  0.32,
-  -1.25,
+  0.3,
+  -1.35,
   0
 );
 
@@ -670,48 +945,161 @@ robot.add(
   rightLeg
 );
 
-const legGeometry =
-  new THREE.SphereGeometry(
-    0.27,
-    16,
-    16
+
+// Upper legs
+
+const upperLegGeometry =
+  new THREE.CapsuleGeometry(
+    0.16,
+    0.42,
+    6,
+    10
   );
 
-const leftLegMesh =
+const leftUpperLeg =
   new THREE.Mesh(
-    legGeometry,
-    bodyMaterial
+    upperLegGeometry,
+    whiteMaterial
   );
 
-const rightLegMesh =
+const rightUpperLeg =
   new THREE.Mesh(
-    legGeometry,
-    bodyMaterial
+    upperLegGeometry,
+    whiteMaterial
   );
 
-leftLegMesh.scale.y =
-  1.35;
+leftUpperLeg.position.y =
+  -0.23;
 
-rightLegMesh.scale.y =
-  1.35;
-
-leftLegMesh.position.y =
-  -0.22;
-
-rightLegMesh.position.y =
-  -0.22;
+rightUpperLeg.position.y =
+  -0.23;
 
 leftLeg.add(
-  leftLegMesh
+  leftUpperLeg
 );
 
 rightLeg.add(
-  rightLegMesh
+  rightUpperLeg
+);
+
+
+// Knees
+
+const leftKnee =
+  new THREE.Mesh(
+    jointGeometry,
+    blueMaterial
+  );
+
+const rightKnee =
+  new THREE.Mesh(
+    jointGeometry,
+    blueMaterial
+  );
+
+leftKnee.position.y =
+  -0.51;
+
+rightKnee.position.y =
+  -0.51;
+
+leftLeg.add(
+  leftKnee
+);
+
+rightLeg.add(
+  rightKnee
+);
+
+
+// Lower legs
+
+const lowerLegGeometry =
+  new THREE.CapsuleGeometry(
+    0.13,
+    0.4,
+    6,
+    10
+  );
+
+const leftLowerLeg =
+  new THREE.Mesh(
+    lowerLegGeometry,
+    whiteMaterial
+  );
+
+const rightLowerLeg =
+  new THREE.Mesh(
+    lowerLegGeometry,
+    whiteMaterial
+  );
+
+leftLowerLeg.position.y =
+  -0.8;
+
+rightLowerLeg.position.y =
+  -0.8;
+
+leftLeg.add(
+  leftLowerLeg
+);
+
+rightLeg.add(
+  rightLowerLeg
 );
 
 
 // ============================================================
-// TARGET
+// FEET
+// ============================================================
+
+const leftFoot =
+  new THREE.Mesh(
+    footGeometry,
+    whiteBrightMaterial
+  );
+
+const rightFoot =
+  new THREE.Mesh(
+    footGeometry,
+    whiteBrightMaterial
+  );
+
+leftFoot.scale.set(
+  1.25,
+  0.55,
+  1.55
+);
+
+rightFoot.scale.set(
+  1.25,
+  0.55,
+  1.55
+);
+
+leftFoot.position.set(
+  0,
+  -1.15,
+  0.15
+);
+
+rightFoot.position.set(
+  0,
+  -1.15,
+  0.15
+);
+
+leftLeg.add(
+  leftFoot
+);
+
+rightLeg.add(
+  rightFoot
+);
+
+
+// ============================================================
+// MOUSE TARGET
 // ============================================================
 
 const pointer =
@@ -722,15 +1110,15 @@ const target =
 
 
 // ============================================================
-// CURSOR VISUAL
+// CURSOR
 // ============================================================
 
 const cursorDot =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      0.06,
-      12,
-      12
+      0.055,
+      10,
+      10
     ),
     new THREE.MeshBasicMaterial({
       color: 0xffffff
@@ -748,7 +1136,9 @@ const cursorRing =
       24
     ),
     new THREE.MeshBasicMaterial({
-      color: 0xb72cff
+      color: 0x39aaff,
+      transparent: true,
+      opacity: 0.85
     })
   );
 
@@ -756,21 +1146,13 @@ scene.add(cursorRing);
 
 
 // ============================================================
-// IMPORTANT: DIRECT MOUSE → WORLD POSITION
+// MOUSE → ROBOT TARGET
 // ============================================================
 
-function updateTargetFromMouse() {
-
-  // Convert mouse position directly
-  // into our robot movement area.
+function updateTarget() {
 
   target.x =
-    pointer.x * 4.3;
-
-  target.y =
-    -0.65;
-
-  // Mouse Y is inverted
+    pointer.x * 4.4;
 
   target.z =
     pointer.y * 2.8 - 0.5;
@@ -778,15 +1160,14 @@ function updateTargetFromMouse() {
   target.z =
     THREE.MathUtils.clamp(
       target.z,
-      -4.2,
-      2.5
+      -4.3,
+      2.4
     );
+
+  target.y =
+    -0.55;
 }
 
-
-// ============================================================
-// MOUSE MOVE
-// ============================================================
 
 window.addEventListener(
   'pointermove',
@@ -794,20 +1175,19 @@ window.addEventListener(
 
     pointer.x =
       (event.clientX /
-        window.innerWidth) *
+        innerWidth) *
         2 -
       1;
 
     pointer.y =
       -(
         event.clientY /
-        window.innerHeight
+        innerHeight
       ) *
         2 +
       1;
 
-    // UPDATE IMMEDIATELY
-    updateTargetFromMouse();
+    updateTarget();
   }
 );
 
@@ -816,38 +1196,37 @@ window.addEventListener(
 // GAS TRAIL
 // ============================================================
 
-// Reuse ONE geometry
 const gasGeometry =
   new THREE.SphereGeometry(
-    0.1,
-    8,
-    8
+    0.09,
+    7,
+    7
   );
 
-// Reuse materials
 const gasMaterials = [
   new THREE.MeshBasicMaterial({
-    color: 0xb82cff,
-    transparent: true,
-    opacity: 0.4
-  }),
-  new THREE.MeshBasicMaterial({
-    color: 0x762cff,
+    color: 0x4f9cff,
     transparent: true,
     opacity: 0.35
   }),
+
   new THREE.MeshBasicMaterial({
-    color: 0xe45cff,
+    color: 0x8f4dff,
     transparent: true,
-    opacity: 0.3
+    opacity: 0.32
+  }),
+
+  new THREE.MeshBasicMaterial({
+    color: 0xb96cff,
+    transparent: true,
+    opacity: 0.25
   })
 ];
 
 const gasParticles = [];
 
 const MAX_GAS =
-  45;
-
+  38;
 
 function spawnGas() {
 
@@ -858,7 +1237,7 @@ function spawnGas() {
     return;
   }
 
-  const particle =
+  const p =
     new THREE.Mesh(
       gasGeometry,
       gasMaterials[
@@ -869,96 +1248,99 @@ function spawnGas() {
       ]
     );
 
-  particle.position.copy(
+  p.position.copy(
     robot.position
   );
 
-  particle.position.x +=
+  p.position.x +=
     THREE.MathUtils.randFloatSpread(
       0.35
     );
 
-  particle.position.y +=
+  p.position.y +=
     THREE.MathUtils.randFloat(
-      -0.8,
-      -0.1
+      -1.0,
+      -0.25
     );
 
-  particle.position.z +=
+  p.position.z +=
+    THREE.MathUtils.randFloatSpread(
+      0.3
+    );
+
+  p.scale.setScalar(
     THREE.MathUtils.randFloat(
-      -0.2,
+      0.5,
+      1.1
+    )
+  );
+
+  p.userData.life =
+    THREE.MathUtils.randFloat(
+      0.5,
+      0.9
+    );
+
+  p.userData.maxLife =
+    p.userData.life;
+
+  p.userData.vx =
+    THREE.MathUtils.randFloat(
+      -0.25,
       0.25
     );
 
-  particle.userData.life =
-    0.55 +
-    Math.random() * 0.4;
+  p.userData.vy =
+    THREE.MathUtils.randFloat(
+      0.05,
+      0.3
+    );
 
-  particle.userData.maxLife =
-    particle.userData.life;
+  p.userData.vz =
+    THREE.MathUtils.randFloat(
+      0.25,
+      0.7
+    );
 
-  particle.userData.vx =
-    (Math.random() - 0.5) *
-    0.3;
+  scene.add(p);
 
-  particle.userData.vy =
-    Math.random() * 0.3;
-
-  particle.userData.vz =
-    0.3 +
-    Math.random() * 0.5;
-
-  particle.scale.setScalar(
-    0.5 +
-    Math.random() * 0.7
-  );
-
-  scene.add(particle);
-
-  gasParticles.push(
-    particle
-  );
+  gasParticles.push(p);
 }
 
 
 // ============================================================
-// FIRECRACKER
+// FIRECRACKERS
 // ============================================================
 
 const firecrackerBursts = [];
 
 const explosionGeometry =
   new THREE.SphereGeometry(
-    0.025,
+    0.022,
     6,
     6
   );
 
 const explosionColors = [
-  0xff45ff,
-  0xa855ff,
-  0x5f9cff,
+  0x35bfff,
+  0x6c65ff,
   0xffffff,
-  0xffa33b,
-  0xffef65
+  0xff5de8,
+  0xffd45c
 ];
 
 
 // ============================================================
-// CLICK EXPLOSION
+// CLICK
 // ============================================================
 
 window.addEventListener(
   'pointerdown',
   () => {
 
-    const position =
-      target.clone();
-
     const particles = [];
 
-    const count = 45;
-
+    const count = 42;
 
     for (
       let i = 0;
@@ -986,7 +1368,7 @@ window.addEventListener(
         );
 
       particle.position.copy(
-        position
+        target
       );
 
       const direction =
@@ -996,55 +1378,52 @@ window.addEventListener(
           Math.random() * 2 - 1
         ).normalize();
 
+      const speed =
+        THREE.MathUtils.randFloat(
+          1.5,
+          4
+        );
+
       particle.userData.vx =
-        direction.x *
-        (1.5 +
-          Math.random() * 3);
+        direction.x * speed;
 
       particle.userData.vy =
-        direction.y *
-        (1.5 +
-          Math.random() * 3);
+        direction.y * speed;
 
       particle.userData.vz =
-        direction.z *
-        (1.5 +
-          Math.random() * 3);
+        direction.z * speed;
 
       particle.userData.life =
-        0.7 +
-        Math.random() * 0.4;
+        THREE.MathUtils.randFloat(
+          0.6,
+          1.1
+        );
 
-      scene.add(particle);
+      scene.add(
+        particle
+      );
 
       particles.push(
         particle
       );
     }
 
-    firecrackerBursts.push(
-      {
-        particles,
-        age: 0
-      }
-    );
+    firecrackerBursts.push({
+      particles,
+      age: 0
+    });
   }
 );
 
 
 // ============================================================
-// CLOCK
+// ANIMATION
 // ============================================================
 
 const clock =
   new THREE.Clock();
 
 let gasTimer = 0;
-
-
-// ============================================================
-// ANIMATION
-// ============================================================
 
 function animate() {
 
@@ -1062,9 +1441,9 @@ function animate() {
     clock.elapsedTime;
 
 
-  // ========================================================
+  // ==========================================================
   // ROBOT MOVEMENT
-  // ========================================================
+  // ==========================================================
 
   const dx =
     target.x -
@@ -1081,11 +1460,11 @@ function animate() {
     );
 
 
-  if (
-    distance > 0.06
-  ) {
+  const running =
+    distance > 0.07;
 
-    // Normalize direction
+
+  if (running) {
 
     const dirX =
       dx / distance;
@@ -1094,17 +1473,16 @@ function animate() {
       dz / distance;
 
 
-    // FAST BUT SMOOTH
-
+    // Fast but smooth
     const speed =
       Math.min(
-        8,
-        3.5 +
-        distance * 2
+        8.5,
+        3.2 +
+        distance * 1.8
       );
 
 
-    const move =
+    const movement =
       Math.min(
         speed * dt,
         distance
@@ -1112,15 +1490,15 @@ function animate() {
 
 
     robot.position.x +=
-      dirX * move;
+      dirX * movement;
 
     robot.position.z +=
-      dirZ * move;
+      dirZ * movement;
 
 
-    // ======================================================
-    // ROTATION
-    // ======================================================
+    // ========================================================
+    // BODY ROTATION
+    // ========================================================
 
     const angle =
       Math.atan2(
@@ -1132,62 +1510,70 @@ function animate() {
       THREE.MathUtils.damp(
         robot.rotation.y,
         angle,
-        14,
+        12,
         dt
       );
 
 
-    // ======================================================
-    // RUNNING BOUNCE
-    // ======================================================
+    // ========================================================
+    // RUNNING ANIMATION
+    // ========================================================
 
-    const run =
+    const runWave =
       Math.sin(
         time * 15
       );
 
+
+    const runWave2 =
+      Math.sin(
+        time * 15 +
+        Math.PI
+      );
+
+
+    // Body bounce
     robot.position.y =
-      -0.65 +
-      Math.abs(run) *
-      0.09;
+      -0.55 +
+      Math.abs(
+        runWave
+      ) * 0.075;
 
 
+    // Body tilt
     robot.rotation.z =
-      run *
-      0.025;
+      runWave *
+      0.035;
 
 
-    // ======================================================
-    // ARM ANIMATION
-    // ======================================================
-
+    // Arms swing
     leftArm.rotation.z =
-      run * 0.55;
+      runWave *
+      0.55;
 
     rightArm.rotation.z =
-      -run * 0.55;
+      runWave2 *
+      0.55;
 
 
-    // ======================================================
-    // LEG ANIMATION
-    // ======================================================
-
+    // Legs swing
     leftLeg.rotation.x =
-      run * 0.6;
+      runWave2 *
+      0.65;
 
     rightLeg.rotation.x =
-      -run * 0.6;
+      runWave *
+      0.65;
 
 
-    // ======================================================
+    // ========================================================
     // GAS
-    // ======================================================
+    // ========================================================
 
     gasTimer += dt;
 
     if (
-      gasTimer >
-      0.045
+      gasTimer > 0.045
     ) {
 
       spawnGas();
@@ -1197,81 +1583,91 @@ function animate() {
 
   } else {
 
-    // ======================================================
-    // IDLE
-    // ======================================================
+    // ========================================================
+    // IDLE ANIMATION
+    // ========================================================
 
     robot.position.y =
       THREE.MathUtils.damp(
         robot.position.y,
-        -0.65,
-        8,
+        -0.55,
+        7,
         dt
       );
+
 
     robot.rotation.z =
       THREE.MathUtils.damp(
         robot.rotation.z,
         0,
-        8,
+        7,
         dt
       );
+
 
     leftArm.rotation.z =
       THREE.MathUtils.damp(
         leftArm.rotation.z,
         -0.08,
-        7,
+        6,
         dt
       );
+
 
     rightArm.rotation.z =
       THREE.MathUtils.damp(
         rightArm.rotation.z,
         0.08,
-        7,
+        6,
         dt
       );
+
 
     leftLeg.rotation.x =
       THREE.MathUtils.damp(
         leftLeg.rotation.x,
         0,
-        7,
+        6,
         dt
       );
+
 
     rightLeg.rotation.x =
       THREE.MathUtils.damp(
         rightLeg.rotation.x,
         0,
-        7,
+        6,
         dt
       );
+
+
+    // Cute floating
+    robot.position.y +=
+      Math.sin(
+        time * 2.5
+      ) * 0.012;
   }
 
 
-  // ========================================================
-  // HEAD TRACKING
-  // ========================================================
+  // ==========================================================
+  // HEAD FOLLOWS CURSOR
+  // ==========================================================
 
-  const headTarget =
-    new THREE.Vector3(
-      target.x -
-      robot.position.x,
-      target.y -
-      robot.position.y,
-      target.z -
-      robot.position.z
-    );
+  const headDX =
+    target.x -
+    robot.position.x;
+
+  const headDZ =
+    target.z -
+    robot.position.z;
 
 
   const headAngle =
     Math.atan2(
-      headTarget.x,
+      headDX,
       Math.max(
         0.5,
-        headTarget.z
+        headDZ
       )
     );
 
@@ -1280,31 +1676,61 @@ function animate() {
     THREE.MathUtils.damp(
       head.rotation.y,
       THREE.MathUtils.clamp(
-        headAngle * 0.5,
-        -0.6,
-        0.6
+        headAngle * 0.55,
+        -0.65,
+        0.65
       ),
       8,
       dt
     );
 
 
-  // ========================================================
-  // ANTENNA
-  // ========================================================
+  // ==========================================================
+  // EYES TRACK TARGET
+  // ==========================================================
 
-  antennaBall.scale.setScalar(
+  const eyeX =
+    THREE.MathUtils.clamp(
+      headDX * 0.025,
+      -0.055,
+      0.055
+    );
+
+
+  leftEye.position.x =
+    -0.31 +
+    eyeX;
+
+  rightEye.position.x =
+    0.31 +
+    eyeX;
+
+
+  // ==========================================================
+  // CHEST CORE PULSE
+  // ==========================================================
+
+  const pulse =
+    1 +
+    Math.sin(
+      time * 5
+    ) * 0.08;
+
+  chestCore.scale.setScalar(
+    pulse
+  );
+
+  antennaTip.scale.setScalar(
     1 +
     Math.sin(
       time * 6
-    ) *
-    0.12
+    ) * 0.12
   );
 
 
-  // ========================================================
+  // ==========================================================
   // CURSOR
-  // ========================================================
+  // ==========================================================
 
   cursorDot.position.lerp(
     target,
@@ -1322,9 +1748,9 @@ function animate() {
     dt * 2.5;
 
 
-  // ========================================================
-  // GAS UPDATE
-  // ========================================================
+// ==========================================================
+// GAS UPDATE
+// ==========================================================
 
   for (
     let i =
@@ -1348,11 +1774,9 @@ function animate() {
     p.position.z +=
       p.userData.vz * dt;
 
-
     p.scale.multiplyScalar(
-      1.015
+      1.018
     );
-
 
     const alpha =
       Math.max(
@@ -1363,7 +1787,6 @@ function animate() {
 
     p.material.opacity =
       alpha * 0.45;
-
 
     if (
       p.userData.life <= 0
@@ -1379,9 +1802,9 @@ function animate() {
   }
 
 
-  // ========================================================
-  // FIRECRACKER UPDATE
-  // ========================================================
+// ==========================================================
+// FIRECRACKER UPDATE
+// ==========================================================
 
   for (
     let b =
@@ -1397,53 +1820,49 @@ function animate() {
 
 
     for (
-      let i = 0;
-      i <
-      burst.particles.length;
-      i++
+      const particle of
+      burst.particles
     ) {
 
-      const p =
-        burst.particles[i];
-
-      p.userData.life -=
+      particle.userData.life -=
         dt;
 
-      p.userData.vy -=
-        4 * dt;
+      particle.userData.vy -=
+        3.5 * dt;
 
 
-      p.position.x +=
-        p.userData.vx * dt;
+      particle.position.x +=
+        particle.userData.vx * dt;
 
-      p.position.y +=
-        p.userData.vy * dt;
+      particle.position.y +=
+        particle.userData.vy * dt;
 
-      p.position.z +=
-        p.userData.vz * dt;
+      particle.position.z +=
+        particle.userData.vz * dt;
 
 
-      p.material.opacity =
+      particle.material.opacity =
         Math.max(
           0,
-          p.userData.life
+          particle.userData.life
         );
     }
 
 
     if (
-      burst.age >
-      1.2
+      burst.age > 1.15
     ) {
 
       for (
-        const p of
+        const particle of
         burst.particles
       ) {
 
-        scene.remove(p);
+        scene.remove(
+          particle
+        );
 
-        p.material.dispose();
+        particle.material.dispose();
       }
 
       firecrackerBursts.splice(
@@ -1454,20 +1873,20 @@ function animate() {
   }
 
 
-  // ========================================================
-  // BLACK HOLE
-  // ========================================================
+// ==========================================================
+// BLACK HOLE
+// ==========================================================
 
   blackHoleRing.rotation.z +=
-    dt * 0.2;
+    dt * 0.18;
 
   blackHole.rotation.y +=
-    dt * 0.03;
+    dt * 0.025;
 
 
-  // ========================================================
-  // CAMERA
-  // ========================================================
+// ==========================================================
+// CAMERA
+// ==========================================================
 
   camera.position.x =
     THREE.MathUtils.damp(
@@ -1480,8 +1899,8 @@ function animate() {
   camera.position.y =
     THREE.MathUtils.damp(
       camera.position.y,
-      1.5 +
-      pointer.y * 0.1,
+      1.3 +
+      pointer.y * 0.08,
       2,
       dt
     );
@@ -1493,9 +1912,9 @@ function animate() {
   );
 
 
-  // ========================================================
-  // RENDER
-  // ========================================================
+// ==========================================================
+// RENDER
+// ==========================================================
 
   renderer.render(
     scene,
@@ -1505,7 +1924,7 @@ function animate() {
 
 
 // ============================================================
-// INITIAL TARGET
+// START
 // ============================================================
 
 pointer.set(
@@ -1513,10 +1932,7 @@ pointer.set(
   0
 );
 
-updateTargetFromMouse();
-
-
-// START
+updateTarget();
 
 animate();
 
@@ -1538,7 +1954,7 @@ window.addEventListener(
     renderer.setPixelRatio(
       Math.min(
         window.devicePixelRatio,
-        1.5
+        1.35
       )
     );
 
