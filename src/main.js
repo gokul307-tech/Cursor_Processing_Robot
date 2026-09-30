@@ -1,30 +1,46 @@
 import * as THREE from 'three';
 import './style.css';
 
+import { RoundedBoxGeometry } from
+'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+
+
 // ============================================================
-// BASIC SETUP
+// SCENE
 // ============================================================
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020107);
 
-const camera = new THREE.PerspectiveCamera(
-  42,
-  innerWidth / innerHeight,
-  0.1,
-  100
+scene.background =
+  new THREE.Color(0x020107);
+
+
+const camera =
+  new THREE.PerspectiveCamera(
+    42,
+    innerWidth / innerHeight,
+    0.1,
+    100
+  );
+
+camera.position.set(
+  0,
+  1.2,
+  8
 );
 
-camera.position.set(0, 1.3, 8);
 
-const renderer = new THREE.WebGLRenderer({
-  antialias: true,
-  powerPreference: 'high-performance'
-});
+const renderer =
+  new THREE.WebGLRenderer({
+    antialias: true,
+    powerPreference: 'high-performance'
+  });
 
-// FPS optimization
 renderer.setPixelRatio(
-  Math.min(window.devicePixelRatio, 1.35)
+  Math.min(
+    window.devicePixelRatio,
+    1.35
+  )
 );
 
 renderer.setSize(
@@ -38,7 +54,8 @@ renderer.outputColorSpace =
 renderer.toneMapping =
   THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure =
+  1.1;
 
 document
   .querySelector('#app')
@@ -52,30 +69,32 @@ document
 scene.add(
   new THREE.AmbientLight(
     0x9bb7ff,
-    2.2
+    2
   )
 );
 
-const keyLight =
+
+const whiteLight =
   new THREE.PointLight(
     0xffffff,
-    70,
+    65,
     16
   );
 
-keyLight.position.set(
+whiteLight.position.set(
   3,
   4,
   4
 );
 
-scene.add(keyLight);
+scene.add(whiteLight);
+
 
 const blueLight =
   new THREE.PointLight(
-    0x258cff,
-    70,
-    13
+    0x2299ff,
+    65,
+    14
   );
 
 blueLight.position.set(
@@ -86,10 +105,11 @@ blueLight.position.set(
 
 scene.add(blueLight);
 
+
 const purpleLight =
   new THREE.PointLight(
-    0x9c38ff,
-    40,
+    0x8f35ff,
+    35,
     12
   );
 
@@ -115,7 +135,7 @@ const floor =
     new THREE.MeshBasicMaterial({
       color: 0x100016,
       transparent: true,
-      opacity: 0.65
+      opacity: 0.6
     })
   );
 
@@ -123,19 +143,19 @@ floor.rotation.x =
   -Math.PI / 2;
 
 floor.position.y =
-  -2.15;
+  -2.1;
 
 scene.add(floor);
 
 
 // ============================================================
-// STAR FIELD
+// STARS
 // ============================================================
 
 const starGeometry =
   new THREE.BufferGeometry();
 
-const STAR_COUNT = 1200;
+const STAR_COUNT = 1100;
 
 const starPositions =
   new Float32Array(
@@ -147,6 +167,7 @@ for (
   i < STAR_COUNT;
   i++
 ) {
+
   const i3 = i * 3;
 
   starPositions[i3] =
@@ -167,18 +188,15 @@ starGeometry.setAttribute(
   )
 );
 
-const starMaterial =
-  new THREE.PointsMaterial({
-    color: 0xdce5ff,
-    size: 0.018,
-    transparent: true,
-    opacity: 0.75
-  });
-
 scene.add(
   new THREE.Points(
     starGeometry,
-    starMaterial
+    new THREE.PointsMaterial({
+      color: 0xdce6ff,
+      size: 0.018,
+      transparent: true,
+      opacity: 0.7
+    })
   )
 );
 
@@ -190,7 +208,8 @@ scene.add(
 const blackHole =
   new THREE.Group();
 
-const blackHoleCore =
+
+const blackCore =
   new THREE.Mesh(
     new THREE.SphereGeometry(
       1.15,
@@ -203,40 +222,95 @@ const blackHoleCore =
   );
 
 blackHole.add(
-  blackHoleCore
+  blackCore
 );
 
-const blackHoleRing =
+
+const blackRing =
   new THREE.Mesh(
     new THREE.TorusGeometry(
-      1.55,
-      0.075,
+      1.5,
+      0.07,
       12,
       80
     ),
     new THREE.MeshBasicMaterial({
-      color: 0x7b22d8,
+      color: 0x8c29e8,
       transparent: true,
       opacity: 0.35
     })
   );
 
-blackHoleRing.rotation.x =
+blackRing.rotation.x =
   0.25;
 
 blackHole.add(
-  blackHoleRing
+  blackRing
 );
 
 blackHole.position.set(
   0,
-  1.4,
+  1.3,
   -6
 );
 
 scene.add(
   blackHole
 );
+
+
+// ============================================================
+// MATERIALS
+// ============================================================
+
+const white =
+  new THREE.MeshStandardMaterial({
+    color: 0xf4f7fb,
+    metalness: 0.2,
+    roughness: 0.28
+  });
+
+
+const white2 =
+  new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    metalness: 0.12,
+    roughness: 0.22
+  });
+
+
+const blue =
+  new THREE.MeshStandardMaterial({
+    color: 0x176bd6,
+    metalness: 0.35,
+    roughness: 0.25
+  });
+
+
+const blueGlow =
+  new THREE.MeshStandardMaterial({
+    color: 0x28cfff,
+    emissive: 0x009dff,
+    emissiveIntensity: 2.8,
+    metalness: 0.05,
+    roughness: 0.18
+  });
+
+
+const visorMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x030811,
+    metalness: 0.35,
+    roughness: 0.16
+  });
+
+
+const black =
+  new THREE.MeshStandardMaterial({
+    color: 0x080b13,
+    metalness: 0.3,
+    roughness: 0.25
+  });
 
 
 // ============================================================
@@ -256,85 +330,32 @@ scene.add(robot);
 
 
 // ============================================================
-// ROBOT MATERIALS
+// HELPER: CURVED BOX
 // ============================================================
 
-const whiteMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0xf3f6fa,
-    metalness: 0.25,
-    roughness: 0.3
-  });
+function roundedBox(
+  width,
+  height,
+  depth,
+  radius,
+  material,
+  segments = 5
+) {
 
-const whiteBrightMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    metalness: 0.15,
-    roughness: 0.25
-  });
+  const geometry =
+    new RoundedBoxGeometry(
+      width,
+      height,
+      depth,
+      segments,
+      radius
+    );
 
-const darkVisorMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0x050a12,
-    metalness: 0.45,
-    roughness: 0.18
-  });
-
-const blueMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0x176de5,
-    metalness: 0.35,
-    roughness: 0.25
-  });
-
-const blueGlowMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0x24cfff,
-    emissive: 0x009cff,
-    emissiveIntensity: 2.8,
-    metalness: 0.1,
-    roughness: 0.2
-  });
-
-const blackMaterial =
-  new THREE.MeshStandardMaterial({
-    color: 0x070a12,
-    metalness: 0.3,
-    roughness: 0.25
-  });
-
-
-// ============================================================
-// SHARED GEOMETRIES
-// ============================================================
-
-const bodyGeometry =
-  new THREE.SphereGeometry(
-    1,
-    24,
-    20
+  return new THREE.Mesh(
+    geometry,
+    material
   );
-
-const jointGeometry =
-  new THREE.SphereGeometry(
-    0.22,
-    16,
-    16
-  );
-
-const handGeometry =
-  new THREE.SphereGeometry(
-    0.19,
-    14,
-    14
-  );
-
-const footGeometry =
-  new THREE.SphereGeometry(
-    0.32,
-    18,
-    16
-  );
+}
 
 
 // ============================================================
@@ -342,16 +363,14 @@ const footGeometry =
 // ============================================================
 
 const body =
-  new THREE.Mesh(
-    bodyGeometry,
-    whiteMaterial
+  roundedBox(
+    1.35,
+    1.45,
+    0.95,
+    0.28,
+    white,
+    6
   );
-
-body.scale.set(
-  0.82,
-  1.0,
-  0.62
-);
 
 body.position.y =
   -0.45;
@@ -360,81 +379,90 @@ robot.add(body);
 
 
 // ============================================================
-// BELT / WAIST
+// BODY SIDE PANEL
 // ============================================================
 
-const waist =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.52,
-      20,
-      16
-    ),
-    darkVisorMaterial
+const bodyPanel =
+  roundedBox(
+    1.15,
+    0.8,
+    0.08,
+    0.12,
+    white2,
+    5
   );
 
-waist.scale.set(
-  1.25,
-  0.35,
-  0.75
-);
-
-waist.position.y =
-  -1.15;
-
-robot.add(waist);
-
-
-// ============================================================
-// CHEST PANEL
-// ============================================================
-
-const chestPanel =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.48,
-      24,
-      20
-    ),
-    whiteBrightMaterial
-  );
-
-chestPanel.scale.set(
-  1.0,
-  1.0,
-  0.25
-);
-
-chestPanel.position.set(
+bodyPanel.position.set(
   0,
   -0.35,
-  0.55
+  0.51
 );
 
-robot.add(chestPanel);
+robot.add(bodyPanel);
 
 
 // ============================================================
-// BLUE CHEST CORE
+// CHEST BLUE CORE
 // ============================================================
+
+const chestRing =
+  roundedBox(
+    0.55,
+    0.55,
+    0.12,
+    0.18,
+    blue,
+    6
+  );
+
+chestRing.position.set(
+  0,
+  -0.35,
+  0.59
+);
+
+robot.add(chestRing);
+
 
 const chestCore =
   new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.22,
-      20,
+    new THREE.CircleGeometry(
+      0.16,
       20
     ),
-    blueGlowMaterial
+    blueGlow
   );
 
 chestCore.position.set(
   0,
-  -0.38,
-  0.69
+  -0.35,
+  0.66
 );
 
+chestCore.rotation.y =
+  0;
+
 robot.add(chestCore);
+
+
+// ============================================================
+// WAIST
+// ============================================================
+
+const waist =
+  roundedBox(
+    0.95,
+    0.28,
+    0.7,
+    0.12,
+    black,
+    5
+  );
+
+waist.position.y =
+  -1.22;
+
+robot.add(waist);
 
 
 // ============================================================
@@ -445,28 +473,22 @@ const head =
   new THREE.Group();
 
 head.position.y =
-  0.95;
+  1.0;
 
 robot.add(head);
 
 
-// Rounded white head
+// Main curved head
 
 const headShell =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.95,
-      32,
-      24
-    ),
-    whiteBrightMaterial
+  roundedBox(
+    1.65,
+    1.25,
+    1.15,
+    0.3,
+    white2,
+    7
   );
-
-headShell.scale.set(
-  1.12,
-  0.88,
-  0.86
-);
 
 head.add(
   headShell
@@ -474,61 +496,48 @@ head.add(
 
 
 // ============================================================
-// BLUE HEAD CAP
+// BLUE TOP PANEL
 // ============================================================
 
-const headCap =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.95,
-      24,
-      16,
-      0,
-      Math.PI * 2,
-      0,
-      Math.PI * 0.3
-    ),
-    blueMaterial
+const topPanel =
+  roundedBox(
+    0.65,
+    0.18,
+    0.7,
+    0.08,
+    blue,
+    5
   );
 
-headCap.scale.set(
-  1.12,
-  0.88,
-  0.86
+topPanel.position.set(
+  0,
+  0.58,
+  -0.02
 );
 
-headCap.position.y =
-  0.08;
-
 head.add(
-  headCap
+  topPanel
 );
 
 
 // ============================================================
-// FACE VISOR
+// BLACK CURVED VISOR
 // ============================================================
 
 const visor =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.75,
-      28,
-      20
-    ),
-    darkVisorMaterial
+  roundedBox(
+    1.38,
+    0.78,
+    0.13,
+    0.18,
+    visorMaterial,
+    8
   );
-
-visor.scale.set(
-  1.18,
-  0.72,
-  0.25
-);
 
 visor.position.set(
   0,
   0.02,
-  0.76
+  0.61
 );
 
 head.add(
@@ -542,33 +551,36 @@ head.add(
 
 const eyeGeometry =
   new THREE.SphereGeometry(
-    0.17,
-    20,
-    20
+    0.16,
+    18,
+    18
   );
+
 
 const leftEye =
   new THREE.Mesh(
     eyeGeometry,
-    blueGlowMaterial
+    blueGlow
   );
+
 
 const rightEye =
   new THREE.Mesh(
     eyeGeometry,
-    blueGlowMaterial
+    blueGlow
   );
 
+
 leftEye.position.set(
-  -0.31,
-  0.08,
-  0.92
+  -0.3,
+  0.07,
+  0.7
 );
 
 rightEye.position.set(
-  0.31,
-  0.08,
-  0.92
+  0.3,
+  0.07,
+  0.7
 );
 
 head.add(
@@ -581,40 +593,44 @@ head.add(
 // EYE HIGHLIGHTS
 // ============================================================
 
-const highlightGeometry =
-  new THREE.SphereGeometry(
-    0.045,
-    10,
-    10
-  );
-
-const highlightMaterial =
+const highlight =
   new THREE.MeshBasicMaterial({
     color: 0xffffff
   });
 
+
 const leftHighlight =
   new THREE.Mesh(
-    highlightGeometry,
-    highlightMaterial
+    new THREE.SphereGeometry(
+      0.045,
+      8,
+      8
+    ),
+    highlight
   );
+
 
 const rightHighlight =
   new THREE.Mesh(
-    highlightGeometry,
-    highlightMaterial
+    new THREE.SphereGeometry(
+      0.045,
+      8,
+      8
+    ),
+    highlight
   );
 
+
 leftHighlight.position.set(
-  -0.36,
-  0.14,
-  1.04
+  -0.34,
+  0.13,
+  0.78
 );
 
 rightHighlight.position.set(
   0.26,
-  0.14,
-  1.04
+  0.13,
+  0.78
 );
 
 head.add(
@@ -624,10 +640,10 @@ head.add(
 
 
 // ============================================================
-// SMILE
+// CUTE SMILE
 // ============================================================
 
-const mouth =
+const smile =
   new THREE.Mesh(
     new THREE.TorusGeometry(
       0.12,
@@ -636,64 +652,53 @@ const mouth =
       20,
       Math.PI
     ),
-    blueGlowMaterial
+    blueGlow
   );
 
-mouth.rotation.x =
+smile.rotation.x =
   Math.PI;
 
-mouth.position.set(
+smile.position.set(
   0,
-  -0.17,
-  0.94
+  -0.15,
+  0.72
 );
 
 head.add(
-  mouth
+  smile
 );
 
 
 // ============================================================
-// SIDE EAR PANELS
+// SIDE EAR BOXES
 // ============================================================
 
-const earGeometry =
-  new THREE.CylinderGeometry(
-    0.28,
-    0.28,
-    0.12,
-    20
-  );
-
 const leftEar =
-  new THREE.Mesh(
-    earGeometry,
-    blueMaterial
+  roundedBox(
+    0.16,
+    0.55,
+    0.55,
+    0.12,
+    blue,
+    5
   );
 
 const rightEar =
-  new THREE.Mesh(
-    earGeometry,
-    blueMaterial
+  roundedBox(
+    0.16,
+    0.55,
+    0.55,
+    0.12,
+    blue,
+    5
   );
 
-leftEar.rotation.z =
-  Math.PI / 2;
 
-rightEar.rotation.z =
-  Math.PI / 2;
+leftEar.position.x =
+  -0.88;
 
-leftEar.position.set(
-  -1.0,
-  0,
-  0
-);
-
-rightEar.position.set(
-  1.0,
-  0,
-  0
-);
+rightEar.position.x =
+  0.88;
 
 head.add(
   leftEar,
@@ -706,18 +711,17 @@ head.add(
 // ============================================================
 
 const neck =
-  new THREE.Mesh(
-    new THREE.CylinderGeometry(
-      0.25,
-      0.3,
-      0.22,
-      16
-    ),
-    blackMaterial
+  roundedBox(
+    0.45,
+    0.22,
+    0.42,
+    0.08,
+    black,
+    5
   );
 
 neck.position.y =
-  -0.03;
+  0.28;
 
 robot.add(neck);
 
@@ -731,29 +735,30 @@ const antenna =
     new THREE.CylinderGeometry(
       0.025,
       0.035,
-      0.35,
-      10
+      0.3,
+      8
     ),
-    blueMaterial
+    blue
   );
 
 antenna.position.y =
-  1.9;
+  1.78;
 
 robot.add(antenna);
+
 
 const antennaTip =
   new THREE.Mesh(
     new THREE.SphereGeometry(
       0.08,
-      14,
-      14
+      12,
+      12
     ),
-    blueGlowMaterial
+    blueGlow
   );
 
 antennaTip.position.y =
-  2.08;
+  1.95;
 
 robot.add(antennaTip);
 
@@ -768,14 +773,15 @@ const leftArm =
 const rightArm =
   new THREE.Group();
 
+
 leftArm.position.set(
-  -0.78,
+  -0.82,
   -0.25,
   0
 );
 
 rightArm.position.set(
-  0.78,
+  0.82,
   -0.25,
   0
 );
@@ -786,135 +792,155 @@ robot.add(
 );
 
 
-// Upper arms
+// Upper arm
 
-const upperArmGeometry =
-  new THREE.CapsuleGeometry(
-    0.14,
-    0.45,
-    6,
-    10
+const upperArmL =
+  roundedBox(
+    0.28,
+    0.58,
+    0.32,
+    0.12,
+    white2,
+    5
   );
 
-const leftUpperArm =
-  new THREE.Mesh(
-    upperArmGeometry,
-    whiteMaterial
+const upperArmR =
+  roundedBox(
+    0.28,
+    0.58,
+    0.32,
+    0.12,
+    white2,
+    5
   );
 
-const rightUpperArm =
-  new THREE.Mesh(
-    upperArmGeometry,
-    whiteMaterial
-  );
 
-leftUpperArm.position.y =
+upperArmL.position.y =
   -0.25;
 
-rightUpperArm.position.y =
+upperArmR.position.y =
   -0.25;
 
 leftArm.add(
-  leftUpperArm
+  upperArmL
 );
 
 rightArm.add(
-  rightUpperArm
+  upperArmR
 );
 
 
 // Elbows
 
-const leftElbow =
+const elbowL =
   new THREE.Mesh(
-    jointGeometry,
-    blueMaterial
+    new THREE.SphereGeometry(
+      0.17,
+      14,
+      14
+    ),
+    blue
   );
 
-const rightElbow =
+const elbowR =
   new THREE.Mesh(
-    jointGeometry,
-    blueMaterial
+    new THREE.SphereGeometry(
+      0.17,
+      14,
+      14
+    ),
+    blue
   );
 
-leftElbow.position.y =
-  -0.56;
 
-rightElbow.position.y =
-  -0.56;
+elbowL.position.y =
+  -0.58;
+
+elbowR.position.y =
+  -0.58;
 
 leftArm.add(
-  leftElbow
+  elbowL
 );
 
 rightArm.add(
-  rightElbow
+  elbowR
 );
 
 
 // Forearms
 
-const forearmGeometry =
-  new THREE.CapsuleGeometry(
-    0.13,
-    0.4,
-    6,
-    10
+const forearmL =
+  roundedBox(
+    0.27,
+    0.48,
+    0.3,
+    0.11,
+    white,
+    5
   );
 
-const leftForearm =
-  new THREE.Mesh(
-    forearmGeometry,
-    whiteMaterial
+const forearmR =
+  roundedBox(
+    0.27,
+    0.48,
+    0.3,
+    0.11,
+    white,
+    5
   );
 
-const rightForearm =
-  new THREE.Mesh(
-    forearmGeometry,
-    whiteMaterial
-  );
 
-leftForearm.position.y =
-  -0.82;
+forearmL.position.y =
+  -0.85;
 
-rightForearm.position.y =
-  -0.82;
+forearmR.position.y =
+  -0.85;
 
 leftArm.add(
-  leftForearm
+  forearmL
 );
 
 rightArm.add(
-  rightForearm
+  forearmR
 );
 
 
 // Hands
 
-const leftHand =
-  new THREE.Mesh(
-    handGeometry,
-    blackMaterial
+const handL =
+  roundedBox(
+    0.3,
+    0.28,
+    0.32,
+    0.1,
+    black,
+    5
   );
 
-const rightHand =
-  new THREE.Mesh(
-    handGeometry,
-    blackMaterial
+const handR =
+  roundedBox(
+    0.3,
+    0.28,
+    0.32,
+    0.1,
+    black,
+    5
   );
 
-leftHand.position.y =
-  -1.12;
 
-rightHand.position.y =
-  -1.12;
+handL.position.y =
+  -1.16;
+
+handR.position.y =
+  -1.16;
 
 leftArm.add(
-  leftHand
+  handL
 );
 
 rightArm.add(
-  rightHand
+  handR
 );
 
 
@@ -928,14 +954,15 @@ const leftLeg =
 const rightLeg =
   new THREE.Group();
 
+
 leftLeg.position.set(
-  -0.3,
+  -0.32,
   -1.35,
   0
 );
 
 rightLeg.position.set(
-  0.3,
+  0.32,
   -1.35,
   0
 );
@@ -948,104 +975,115 @@ robot.add(
 
 // Upper legs
 
-const upperLegGeometry =
-  new THREE.CapsuleGeometry(
-    0.16,
+const upperLegL =
+  roundedBox(
+    0.38,
+    0.48,
     0.42,
-    6,
-    10
+    0.13,
+    white2,
+    5
   );
 
-const leftUpperLeg =
-  new THREE.Mesh(
-    upperLegGeometry,
-    whiteMaterial
+const upperLegR =
+  roundedBox(
+    0.38,
+    0.48,
+    0.42,
+    0.13,
+    white2,
+    5
   );
 
-const rightUpperLeg =
-  new THREE.Mesh(
-    upperLegGeometry,
-    whiteMaterial
-  );
 
-leftUpperLeg.position.y =
-  -0.23;
+upperLegL.position.y =
+  -0.22;
 
-rightUpperLeg.position.y =
-  -0.23;
+upperLegR.position.y =
+  -0.22;
 
 leftLeg.add(
-  leftUpperLeg
+  upperLegL
 );
 
 rightLeg.add(
-  rightUpperLeg
+  upperLegR
 );
 
 
 // Knees
 
-const leftKnee =
+const kneeL =
   new THREE.Mesh(
-    jointGeometry,
-    blueMaterial
+    new THREE.SphereGeometry(
+      0.18,
+      14,
+      14
+    ),
+    blue
   );
 
-const rightKnee =
+const kneeR =
   new THREE.Mesh(
-    jointGeometry,
-    blueMaterial
+    new THREE.SphereGeometry(
+      0.18,
+      14,
+      14
+    ),
+    blue
   );
 
-leftKnee.position.y =
-  -0.51;
 
-rightKnee.position.y =
-  -0.51;
+kneeL.position.y =
+  -0.53;
+
+kneeR.position.y =
+  -0.53;
 
 leftLeg.add(
-  leftKnee
+  kneeL
 );
 
 rightLeg.add(
-  rightKnee
+  kneeR
 );
 
 
 // Lower legs
 
-const lowerLegGeometry =
-  new THREE.CapsuleGeometry(
-    0.13,
-    0.4,
-    6,
-    10
+const lowerLegL =
+  roundedBox(
+    0.32,
+    0.48,
+    0.38,
+    0.12,
+    white,
+    5
   );
 
-const leftLowerLeg =
-  new THREE.Mesh(
-    lowerLegGeometry,
-    whiteMaterial
+const lowerLegR =
+  roundedBox(
+    0.32,
+    0.48,
+    0.38,
+    0.12,
+    white,
+    5
   );
 
-const rightLowerLeg =
-  new THREE.Mesh(
-    lowerLegGeometry,
-    whiteMaterial
-  );
 
-leftLowerLeg.position.y =
-  -0.8;
+lowerLegL.position.y =
+  -0.83;
 
-rightLowerLeg.position.y =
-  -0.8;
+lowerLegR.position.y =
+  -0.83;
 
 leftLeg.add(
-  leftLowerLeg
+  lowerLegL
 );
 
 rightLeg.add(
-  rightLowerLeg
+  lowerLegR
 );
 
 
@@ -1053,48 +1091,45 @@ rightLeg.add(
 // FEET
 // ============================================================
 
-const leftFoot =
-  new THREE.Mesh(
-    footGeometry,
-    whiteBrightMaterial
+const footL =
+  roundedBox(
+    0.5,
+    0.28,
+    0.65,
+    0.13,
+    white2,
+    5
   );
 
-const rightFoot =
-  new THREE.Mesh(
-    footGeometry,
-    whiteBrightMaterial
+const footR =
+  roundedBox(
+    0.5,
+    0.28,
+    0.65,
+    0.13,
+    white2,
+    5
   );
 
-leftFoot.scale.set(
-  1.25,
-  0.55,
-  1.55
-);
 
-rightFoot.scale.set(
-  1.25,
-  0.55,
-  1.55
-);
-
-leftFoot.position.set(
+footL.position.set(
   0,
-  -1.15,
-  0.15
+  -1.13,
+  0.12
 );
 
-rightFoot.position.set(
+footR.position.set(
   0,
-  -1.15,
-  0.15
+  -1.13,
+  0.12
 );
 
 leftLeg.add(
-  leftFoot
+  footL
 );
 
 rightLeg.add(
-  rightFoot
+  footR
 );
 
 
@@ -1109,46 +1144,6 @@ const target =
   new THREE.Vector3();
 
 
-// ============================================================
-// CURSOR
-// ============================================================
-
-const cursorDot =
-  new THREE.Mesh(
-    new THREE.SphereGeometry(
-      0.055,
-      10,
-      10
-    ),
-    new THREE.MeshBasicMaterial({
-      color: 0xffffff
-    })
-  );
-
-scene.add(cursorDot);
-
-const cursorRing =
-  new THREE.Mesh(
-    new THREE.TorusGeometry(
-      0.14,
-      0.018,
-      8,
-      24
-    ),
-    new THREE.MeshBasicMaterial({
-      color: 0x39aaff,
-      transparent: true,
-      opacity: 0.85
-    })
-  );
-
-scene.add(cursorRing);
-
-
-// ============================================================
-// MOUSE → ROBOT TARGET
-// ============================================================
-
 function updateTarget() {
 
   target.x =
@@ -1160,8 +1155,8 @@ function updateTarget() {
   target.z =
     THREE.MathUtils.clamp(
       target.z,
-      -4.3,
-      2.4
+      -4.2,
+      2.3
     );
 
   target.y =
@@ -1203,30 +1198,34 @@ const gasGeometry =
     7
   );
 
+
 const gasMaterials = [
+
   new THREE.MeshBasicMaterial({
-    color: 0x4f9cff,
+    color: 0x39aaff,
     transparent: true,
     opacity: 0.35
   }),
 
   new THREE.MeshBasicMaterial({
-    color: 0x8f4dff,
+    color: 0x784dff,
     transparent: true,
-    opacity: 0.32
+    opacity: 0.3
   }),
 
   new THREE.MeshBasicMaterial({
-    color: 0xb96cff,
+    color: 0xc46cff,
     transparent: true,
     opacity: 0.25
   })
+
 ];
+
 
 const gasParticles = [];
 
-const MAX_GAS =
-  38;
+const MAX_GAS = 38;
+
 
 function spawnGas() {
 
@@ -1236,6 +1235,7 @@ function spawnGas() {
   ) {
     return;
   }
+
 
   const p =
     new THREE.Mesh(
@@ -1248,46 +1248,52 @@ function spawnGas() {
       ]
     );
 
+
   p.position.copy(
     robot.position
   );
 
+
   p.position.x +=
-    THREE.MathUtils.randFloatSpread(
-      0.35
-    );
-
-  p.position.y +=
-    THREE.MathUtils.randFloat(
-      -1.0,
-      -0.25
-    );
-
-  p.position.z +=
     THREE.MathUtils.randFloatSpread(
       0.3
     );
 
+  p.position.y +=
+    THREE.MathUtils.randFloat(
+      -1.15,
+      -0.4
+    );
+
+  p.position.z +=
+    THREE.MathUtils.randFloat(
+      -0.1,
+      0.3
+    );
+
+
   p.scale.setScalar(
     THREE.MathUtils.randFloat(
-      0.5,
-      1.1
+      0.45,
+      0.9
     )
   );
 
+
   p.userData.life =
     THREE.MathUtils.randFloat(
-      0.5,
-      0.9
+      0.45,
+      0.85
     );
 
   p.userData.maxLife =
     p.userData.life;
 
+
   p.userData.vx =
     THREE.MathUtils.randFloat(
-      -0.25,
-      0.25
+      -0.2,
+      0.2
     );
 
   p.userData.vy =
@@ -1298,9 +1304,10 @@ function spawnGas() {
 
   p.userData.vz =
     THREE.MathUtils.randFloat(
-      0.25,
-      0.7
+      0.2,
+      0.65
     );
+
 
   scene.add(p);
 
@@ -1309,7 +1316,7 @@ function spawnGas() {
 
 
 // ============================================================
-// FIRECRACKERS
+// CLICK FIRECRACKERS
 // ============================================================
 
 const firecrackerBursts = [];
@@ -1321,18 +1328,15 @@ const explosionGeometry =
     6
   );
 
+
 const explosionColors = [
-  0x35bfff,
-  0x6c65ff,
+  0x35cfff,
+  0x6f70ff,
   0xffffff,
-  0xff5de8,
-  0xffd45c
+  0xff5eea,
+  0xffd65c
 ];
 
-
-// ============================================================
-// CLICK
-// ============================================================
 
 window.addEventListener(
   'pointerdown',
@@ -1341,6 +1345,7 @@ window.addEventListener(
     const particles = [];
 
     const count = 42;
+
 
     for (
       let i = 0;
@@ -1361,15 +1366,18 @@ window.addEventListener(
           opacity: 1
         });
 
-      const particle =
+
+      const p =
         new THREE.Mesh(
           explosionGeometry,
           material
         );
 
-      particle.position.copy(
+
+      p.position.copy(
         target
       );
+
 
       const direction =
         new THREE.Vector3(
@@ -1378,41 +1386,81 @@ window.addEventListener(
           Math.random() * 2 - 1
         ).normalize();
 
+
       const speed =
         THREE.MathUtils.randFloat(
           1.5,
           4
         );
 
-      particle.userData.vx =
+
+      p.userData.vx =
         direction.x * speed;
 
-      particle.userData.vy =
+      p.userData.vy =
         direction.y * speed;
 
-      particle.userData.vz =
+      p.userData.vz =
         direction.z * speed;
 
-      particle.userData.life =
+
+      p.userData.life =
         THREE.MathUtils.randFloat(
           0.6,
           1.1
         );
 
-      scene.add(
-        particle
-      );
 
-      particles.push(
-        particle
-      );
+      scene.add(p);
+
+      particles.push(p);
     }
+
 
     firecrackerBursts.push({
       particles,
       age: 0
     });
   }
+);
+
+
+// ============================================================
+// CURSOR
+// ============================================================
+
+const cursorDot =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.05,
+      10,
+      10
+    ),
+    new THREE.MeshBasicMaterial({
+      color: 0xffffff
+    })
+  );
+
+scene.add(
+  cursorDot
+);
+
+
+const cursorRing =
+  new THREE.Mesh(
+    new THREE.TorusGeometry(
+      0.14,
+      0.018,
+      8,
+      24
+    ),
+    new THREE.MeshBasicMaterial({
+      color: 0x35bfff
+    })
+  );
+
+scene.add(
+  cursorRing
 );
 
 
@@ -1425,17 +1473,20 @@ const clock =
 
 let gasTimer = 0;
 
+
 function animate() {
 
   requestAnimationFrame(
     animate
   );
 
+
   const dt =
     Math.min(
       clock.getDelta(),
       0.033
     );
+
 
   const time =
     clock.elapsedTime;
@@ -1453,6 +1504,7 @@ function animate() {
     target.z -
     robot.position.z;
 
+
   const distance =
     Math.sqrt(
       dx * dx +
@@ -1460,11 +1512,9 @@ function animate() {
     );
 
 
-  const running =
-    distance > 0.07;
-
-
-  if (running) {
+  if (
+    distance > 0.07
+  ) {
 
     const dirX =
       dx / distance;
@@ -1473,7 +1523,6 @@ function animate() {
       dz / distance;
 
 
-    // Fast but smooth
     const speed =
       Math.min(
         8.5,
@@ -1496,15 +1545,14 @@ function animate() {
       dirZ * movement;
 
 
-    // ========================================================
-    // BODY ROTATION
-    // ========================================================
+    // Face movement direction
 
     const angle =
       Math.atan2(
         dirX,
         dirZ
       );
+
 
     robot.rotation.y =
       THREE.MathUtils.damp(
@@ -1516,59 +1564,56 @@ function animate() {
 
 
     // ========================================================
-    // RUNNING ANIMATION
+    // CUTE RUN
     // ========================================================
 
-    const runWave =
+    const run =
       Math.sin(
         time * 15
       );
 
 
-    const runWave2 =
+    const oppositeRun =
       Math.sin(
         time * 15 +
         Math.PI
       );
 
 
-    // Body bounce
+    // Bounce
+
     robot.position.y =
       -0.55 +
-      Math.abs(
-        runWave
-      ) * 0.075;
+      Math.abs(run) *
+      0.075;
 
 
-    // Body tilt
+    // Little body tilt
+
     robot.rotation.z =
-      runWave *
+      run *
       0.035;
 
 
-    // Arms swing
+    // Arms
+
     leftArm.rotation.z =
-      runWave *
-      0.55;
+      run * 0.55;
 
     rightArm.rotation.z =
-      runWave2 *
-      0.55;
+      oppositeRun * 0.55;
 
 
-    // Legs swing
+    // Legs
+
     leftLeg.rotation.x =
-      runWave2 *
-      0.65;
+      oppositeRun * 0.6;
 
     rightLeg.rotation.x =
-      runWave *
-      0.65;
+      run * 0.6;
 
 
-    // ========================================================
-    // GAS
-    // ========================================================
+    // Gas
 
     gasTimer += dt;
 
@@ -1584,7 +1629,7 @@ function animate() {
   } else {
 
     // ========================================================
-    // IDLE ANIMATION
+    // IDLE
     // ========================================================
 
     robot.position.y =
@@ -1642,15 +1687,16 @@ function animate() {
 
 
     // Cute floating
+
     robot.position.y +=
       Math.sin(
         time * 2.5
-      ) * 0.012;
+      ) * 0.01;
   }
 
 
   // ==========================================================
-  // HEAD FOLLOWS CURSOR
+  // HEAD TRACKING
   // ==========================================================
 
   const headDX =
@@ -1676,9 +1722,9 @@ function animate() {
     THREE.MathUtils.damp(
       head.rotation.y,
       THREE.MathUtils.clamp(
-        headAngle * 0.55,
-        -0.65,
-        0.65
+        headAngle * 0.5,
+        -0.6,
+        0.6
       ),
       8,
       dt
@@ -1686,10 +1732,10 @@ function animate() {
 
 
   // ==========================================================
-  // EYES TRACK TARGET
+  // EYE TRACKING
   // ==========================================================
 
-  const eyeX =
+  const eyeMove =
     THREE.MathUtils.clamp(
       headDX * 0.025,
       -0.055,
@@ -1698,33 +1744,36 @@ function animate() {
 
 
   leftEye.position.x =
-    -0.31 +
-    eyeX;
+    -0.3 +
+    eyeMove;
+
 
   rightEye.position.x =
-    0.31 +
-    eyeX;
+    0.3 +
+    eyeMove;
 
 
   // ==========================================================
-  // CHEST CORE PULSE
+  // CHEST PULSE
   // ==========================================================
 
   const pulse =
     1 +
     Math.sin(
       time * 5
-    ) * 0.08;
+    ) * 0.07;
+
 
   chestCore.scale.setScalar(
     pulse
   );
 
+
   antennaTip.scale.setScalar(
     1 +
     Math.sin(
       time * 6
-    ) * 0.12
+    ) * 0.1
   );
 
 
@@ -1740,17 +1789,19 @@ function animate() {
     )
   );
 
+
   cursorRing.position.copy(
     cursorDot.position
   );
+
 
   cursorRing.rotation.z +=
     dt * 2.5;
 
 
-// ==========================================================
-// GAS UPDATE
-// ==========================================================
+  // ==========================================================
+  // GAS UPDATE
+  // ==========================================================
 
   for (
     let i =
@@ -1762,8 +1813,10 @@ function animate() {
     const p =
       gasParticles[i];
 
+
     p.userData.life -=
       dt;
+
 
     p.position.x +=
       p.userData.vx * dt;
@@ -1774,19 +1827,19 @@ function animate() {
     p.position.z +=
       p.userData.vz * dt;
 
+
     p.scale.multiplyScalar(
       1.018
     );
 
-    const alpha =
+
+    p.material.opacity =
       Math.max(
         0,
         p.userData.life /
         p.userData.maxLife
-      );
+      ) * 0.45;
 
-    p.material.opacity =
-      alpha * 0.45;
 
     if (
       p.userData.life <= 0
@@ -1802,9 +1855,9 @@ function animate() {
   }
 
 
-// ==========================================================
-// FIRECRACKER UPDATE
-// ==========================================================
+  // ==========================================================
+  // FIRECRACKER UPDATE
+  // ==========================================================
 
   for (
     let b =
@@ -1816,35 +1869,37 @@ function animate() {
     const burst =
       firecrackerBursts[b];
 
+
     burst.age += dt;
 
 
     for (
-      const particle of
+      const p of
       burst.particles
     ) {
 
-      particle.userData.life -=
+      p.userData.life -=
         dt;
 
-      particle.userData.vy -=
+
+      p.userData.vy -=
         3.5 * dt;
 
 
-      particle.position.x +=
-        particle.userData.vx * dt;
+      p.position.x +=
+        p.userData.vx * dt;
 
-      particle.position.y +=
-        particle.userData.vy * dt;
+      p.position.y +=
+        p.userData.vy * dt;
 
-      particle.position.z +=
-        particle.userData.vz * dt;
+      p.position.z +=
+        p.userData.vz * dt;
 
 
-      particle.material.opacity =
+      p.material.opacity =
         Math.max(
           0,
-          particle.userData.life
+          p.userData.life
         );
     }
 
@@ -1854,16 +1909,15 @@ function animate() {
     ) {
 
       for (
-        const particle of
+        const p of
         burst.particles
       ) {
 
-        scene.remove(
-          particle
-        );
+        scene.remove(p);
 
-        particle.material.dispose();
+        p.material.dispose();
       }
+
 
       firecrackerBursts.splice(
         b,
@@ -1873,20 +1927,20 @@ function animate() {
   }
 
 
-// ==========================================================
-// BLACK HOLE
-// ==========================================================
+  // ==========================================================
+  // BLACK HOLE
+  // ==========================================================
 
-  blackHoleRing.rotation.z +=
+  blackRing.rotation.z +=
     dt * 0.18;
 
   blackHole.rotation.y +=
     dt * 0.025;
 
 
-// ==========================================================
-// CAMERA
-// ==========================================================
+  // ==========================================================
+  // CAMERA
+  // ==========================================================
 
   camera.position.x =
     THREE.MathUtils.damp(
@@ -1896,25 +1950,27 @@ function animate() {
       dt
     );
 
+
   camera.position.y =
     THREE.MathUtils.damp(
       camera.position.y,
-      1.3 +
+      1.2 +
       pointer.y * 0.08,
       2,
       dt
     );
 
+
   camera.lookAt(
     0,
-    0.15,
+    0.1,
     -1.5
   );
 
 
-// ==========================================================
-// RENDER
-// ==========================================================
+  // ==========================================================
+  // RENDER
+  // ==========================================================
 
   renderer.render(
     scene,
