@@ -99,4 +99,4 @@ npm run preview
 
 ## Participate the fun !
 
-**[Robot Here !](https://ironman-cursor-bot.vercel.app/)**
+**[Press Here !](https://cursor-processing-robot-nu.vercel.app/)**
