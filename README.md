@@ -76,3 +76,24 @@ cursor-processing-robot/
 ├── index.html
 ├── package.json
 └── README.md
+```
+
+---
+
+## 🚀 Deploy to Vercel
+
+Push the repository to GitHub, then import it in Vercel. Vercel will detect
+the Vite configuration and use the included `vercel.json`.
+
+The deployment settings are:
+
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
+
+For a local production preview:
+
+```bash
+npm install
+npm run build
+npm run preview
+```
